@@ -5,7 +5,8 @@ class CartScreen extends StatefulWidget {
   _CartScreenState createState() => _CartScreenState();
 }
 
-class _CartScreenState extends State<CartScreen> {
+class _CartScreenState extends State<CartScreen>
+    with SingleTickerProviderStateMixin {
   // Lista de itens genéricos do carrinho
   List<Item> cartItems = [
     Item(name: 'Item 1', quantity: 1),
@@ -13,18 +14,50 @@ class _CartScreenState extends State<CartScreen> {
     Item(name: 'Item 3', quantity: 3),
   ];
 
+  late TabController _tabController;
+
+  @override
+  void initState() {
+    super.initState();
+    _tabController = TabController(length: 2, vsync: this);
+  }
+
+  @override
+  void dispose() {
+    _tabController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text('Carrinho de Compras'),
+        backgroundColor: Colors.red,
+        bottom: TabBar(
+          controller: _tabController,
+          tabs: [
+            Tab(icon: Icon(Icons.shopping_cart)),
+            Tab(icon: Icon(Icons.history)),
+          ],
+        ),
       ),
-      body: ListView.builder(
-        itemCount: cartItems.length,
-        itemBuilder: (context, index) {
-          return _buildCartItem(cartItems[index]);
-        },
+      body: TabBarView(
+        controller: _tabController,
+        children: [
+          _buildShoppingCartTab(),
+          _buildOrderHistoryTab(),
+        ],
       ),
+    );
+  }
+
+  Widget _buildShoppingCartTab() {
+    return ListView.builder(
+      itemCount: cartItems.length,
+      itemBuilder: (context, index) {
+        return _buildCartItem(cartItems[index]);
+      },
     );
   }
 
@@ -64,6 +97,12 @@ class _CartScreenState extends State<CartScreen> {
         item.quantity--;
       }
     });
+  }
+
+  Widget _buildOrderHistoryTab() {
+    return Center(
+      child: Text('Histórico de Pedidos'),
+    );
   }
 }
 

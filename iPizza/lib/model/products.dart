@@ -18,7 +18,7 @@ enum ProductCategory {
   esfirraSalgada,
   bebidas,
   promocoes,
-  maisPedidos
+  maisPedidos,
 }
 
 extension ProductCategoryExtension on ProductCategory {
