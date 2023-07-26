@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:ipizza/cart_screen.dart';
 import 'summary_screen.dart';
 import 'model/products.dart';
 
@@ -42,6 +43,10 @@ class _MyHomePageState extends State<MyHomePage> {
             IconButton(
               icon: Icon(Icons.shopping_cart),
               onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => CartScreen()),
+                );
                 // Adicione aqui a função para abrir a tela de carrinho de compras
               },
             ),
