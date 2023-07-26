@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-
+import 'summary_screen.dart';
 import 'model/products.dart';
 
 class MyHomePage extends StatefulWidget {
@@ -85,6 +85,10 @@ class _MyHomePageState extends State<MyHomePage> {
               ),
               ElevatedButton(
                 onPressed: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => SummaryScreen()),
+                  );
                   // Adicione aqui a função para finalizar a compra
                 },
                 child: Text('Finalizar Compra'),
