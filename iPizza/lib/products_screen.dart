@@ -45,7 +45,7 @@ class _MyHomePageState extends State<MyHomePage> {
               onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => CartScreen()),
+                  MaterialPageRoute(builder: (context) => ShoppingCartScreen()),
                 );
                 // Adicione aqui a função para abrir a tela de carrinho de compras
               },
