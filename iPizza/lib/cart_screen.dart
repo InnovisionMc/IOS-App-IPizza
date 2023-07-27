@@ -17,21 +17,30 @@ class _ShoppingCartScreenState extends State<ShoppingCartScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Carrinho'),
+        title: Image.network(
+            'https://i.postimg.cc/C5TXM2Q6/logo.png',
+            height: 70,
+            width: 70,
+        ),
         actions: [
           Padding(
-            padding: EdgeInsets.only(right: 30.0),
+            padding: EdgeInsets.only(right: 8.0),
             child: IconButton(
               icon: Icon(Icons.delete_forever),
               color: Colors.red,
               onPressed: () {
-                // adicionar logica de busca
-                // Adicione aqui a função para abrir a tela de carrinho de compras
+                //adicionar logica para limpar tela
               },
             ),
           ),
         ],
       ),
+
+
+
+
+
+
       body: Padding(
         padding: EdgeInsets.all(16.0),
         child: SingleChildScrollView(
@@ -48,12 +57,12 @@ class _ShoppingCartScreenState extends State<ShoppingCartScreen> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text('Fidelidade', style: TextStyle(fontSize: 20)),
-                  ElevatedButton(
+                  TextButton(
                     onPressed: () {
                       // Lógica para ver mais
                     },
-                    style: ElevatedButton.styleFrom(primary: Colors.red),
-                    child: Text('Ver mais', style: TextStyle(color: Colors.white)),
+                    style: TextButton.styleFrom(primary: Colors.red),
+                    child: Text('Ver mais', style: TextStyle(color: Colors.red)),
                   ),
                 ],
               ),
@@ -65,6 +74,10 @@ class _ShoppingCartScreenState extends State<ShoppingCartScreen> {
           ),
         ),
       ),
+
+
+
+
       bottomNavigationBar: Container(
         decoration: const BoxDecoration(
           color: Colors.white,
@@ -88,7 +101,7 @@ class _ShoppingCartScreenState extends State<ShoppingCartScreen> {
                       fontWeight: FontWeight.normal, fontSize: 12),
                   children: <TextSpan>[
                     TextSpan(
-                      text: 'R\$ 0.00',
+                      text: 'R\$ 00,00',
                       style: TextStyle(
                           fontWeight: FontWeight.bold, fontSize: 16),
                     )
@@ -134,27 +147,37 @@ class _ShoppingCartScreenState extends State<ShoppingCartScreen> {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Image.network(
-            'https://t3.gstatic.com/licensed-image?q=tbn:ANd9GcQcHbxCjB7FY6Rttw1VZFdh0gIZmm4MLLjfmD0dhA11saxBKG_D49VVkmlvz3sE71-b', // Substitua pela URL da imagem real
-            height: 100,
-            width: 100,
-            fit: BoxFit.cover,
+          Container(
+            width: 110,
+            height: 80,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(
+                  8),
+              image: const DecorationImage(
+                image: NetworkImage("https://t3.gstatic.com/licensed-image?q=tbn:ANd9GcQcHbxCjB7FY6Rttw1VZFdh0gIZmm4MLLjfmD0dhA11saxBKG_D49VVkmlvz3sE71-b"),
+                fit: BoxFit.cover,
+              ),
+            ),
           ),
+
           SizedBox(width: 16),
           Expanded(
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.end,
               children: [
-                Text(
+                const Text(
                   'Pizza de Calabresa',
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                  style: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
                 SizedBox(height: 8),
-                Text('Valor do item: R\$ $itemPrice'),
+                Text('Valor: R\$ $itemPrice'),
                 SizedBox(height: 8),
-                Text('Quantidade:'),
                 SizedBox(height: 8),
                 Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween, // Fixa os ícones à direita
                   children: [
                     IconButton(
                       onPressed: () {
@@ -180,7 +203,7 @@ class _ShoppingCartScreenState extends State<ShoppingCartScreen> {
                   ],
                 ),
                 SizedBox(height: 8),
-                Text('Valor total do item: R\$ ${itemCount * itemPrice}'),
+                Text('Total: R\$ ${itemCount * itemPrice}'),
               ],
             ),
           ),
@@ -189,6 +212,9 @@ class _ShoppingCartScreenState extends State<ShoppingCartScreen> {
     );
   }
 
+
+
+
   void updateTotalValue() {
     setState(() {
       totalValue = itemCount * itemPrice;
@@ -196,7 +222,7 @@ class _ShoppingCartScreenState extends State<ShoppingCartScreen> {
   }
 
   Widget _buildGenericItemsCarousel() {
-    List<Map<String, dynamic>> genericItems = [
+    List<Map<String, dynamic>> suggestedItens  = [
       {'title': 'Guaraná Antártica', 'price': 5.0, 'description': 'Refrigerante'},
       {'title': 'Pizza de Chocolate', 'price': 20.0, 'description': 'Saborosa pizza de chocolate'},
       {'title': 'Batata Frita', 'price': 8.0, 'description': 'Porção de batata frita'},
@@ -206,11 +232,11 @@ class _ShoppingCartScreenState extends State<ShoppingCartScreen> {
       height: 150,
       child: CarouselSlider(
         options: CarouselOptions(
-          height: 150.0,
+          height: 100.0,
           enlargeCenterPage: true,
-          autoPlay: true,
+          autoPlay: false,
         ),
-        items: genericItems.map((item) {
+        items: suggestedItens.map((item) {
           return Builder(
             builder: (BuildContext context) {
               return Container(
@@ -243,10 +269,4 @@ class _ShoppingCartScreenState extends State<ShoppingCartScreen> {
       ),
     );
   }
-}
-
-void main() {
-  runApp(MaterialApp(
-    home: ShoppingCartScreen(),
-  ));
 }
