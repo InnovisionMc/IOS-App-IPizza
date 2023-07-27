@@ -111,7 +111,7 @@ class _ShoppingCartScreenState extends State<ShoppingCartScreen> {
                 child: const Padding(
                   padding: EdgeInsets.all(8.0),
                   child: Text(
-                    'Ver carrinho',
+                    'Continuar',
                     style: TextStyle(color: Colors.white),
                   ),
                 ),
