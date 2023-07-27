@@ -9,7 +9,7 @@ class _CartScreenState extends State<CartScreen>
     with SingleTickerProviderStateMixin {
   // Lista de itens genéricos do carrinho
   List<Item> cartItems = [
-    Item(name: 'Item 1', quantity: 1),
+    Item(name: '1', quantity: 1),
     Item(name: 'Item 2', quantity: 2),
     Item(name: 'Item 3', quantity: 3),
   ];
