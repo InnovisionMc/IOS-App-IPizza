@@ -46,10 +46,7 @@ class _MyHomePageState extends State<MyHomePage> {
               icon: Icon(Icons.search),
               color: Colors.red,
               onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => ShoppingCartScreen()),
-                );
+                // adicionar logica de busca
                 // Adicione aqui a função para abrir a tela de carrinho de compras
               },
             ),
@@ -131,7 +128,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     onPressed: () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => SummaryScreen()),
+                        MaterialPageRoute(builder: (context) => ShoppingCartScreen()),
                       );
                       // Adicione aqui a função para finalizar a compra
                     },

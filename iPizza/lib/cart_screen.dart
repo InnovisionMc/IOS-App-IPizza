@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'summary_screen.dart';
+import 'model/products.dart';
 
 class ShoppingCartScreen extends StatefulWidget {
   @override
@@ -8,8 +10,8 @@ class ShoppingCartScreen extends StatefulWidget {
 
 class _ShoppingCartScreenState extends State<ShoppingCartScreen> {
   int itemCount = 1;
-  double itemPrice = 10.0;
-  double totalValue = 10.0;
+  double itemPrice = 52.0;
+  double totalValue = 00.0;
 
   @override
   Widget build(BuildContext context) {
@@ -19,12 +21,13 @@ class _ShoppingCartScreenState extends State<ShoppingCartScreen> {
         actions: [
           Padding(
             padding: EdgeInsets.only(right: 30.0),
-            child: ElevatedButton(
+            child: IconButton(
+              icon: Icon(Icons.delete_forever),
+              color: Colors.red,
               onPressed: () {
-                // Lógica para limpar o carrinho
+                // adicionar logica de busca
+                // Adicione aqui a função para abrir a tela de carrinho de compras
               },
-              style: ElevatedButton.styleFrom(primary: Colors.white),
-              child: Text('Limpar', style: TextStyle(color: Colors.red)),
             ),
           ),
         ],
@@ -62,14 +65,63 @@ class _ShoppingCartScreenState extends State<ShoppingCartScreen> {
           ),
         ),
       ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-      floatingActionButton: ElevatedButton(
-        onPressed: () {
-          // Lógica para continuar
-        },
-        style: ElevatedButton.styleFrom(primary: Colors.red),
-        child: Text('Continuar', style: TextStyle(color: Colors.white)),
+      bottomNavigationBar: Container(
+        decoration: const BoxDecoration(
+          color: Colors.white,
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black,
+              blurRadius: 15.0,
+              offset: Offset(3.0, 3.0),
+            ),
+          ],
+        ),
+        child: Padding(
+          padding: const EdgeInsets.only(top: 16, bottom: 32, left: 8, right: 8),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              const Text.rich(
+                TextSpan(
+                  text: 'Total sem a entrega\n',
+                  style: TextStyle(
+                      fontWeight: FontWeight.normal, fontSize: 12),
+                  children: <TextSpan>[
+                    TextSpan(
+                      text: 'R\$ 0.00',
+                      style: TextStyle(
+                          fontWeight: FontWeight.bold, fontSize: 16),
+                    )
+                  ],
+                ),
+              ),
+              MaterialButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => SummaryScreen()),
+                  );
+                  // Adicione aqui a função para finalizar a compra
+                },
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8.0),
+                ),
+                color: Colors.red,
+                minWidth: 150,
+                child: const Padding(
+                  padding: EdgeInsets.all(8.0),
+                  child: Text(
+                    'Ver carrinho',
+                    style: TextStyle(color: Colors.white),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
       ),
+
+
     );
   }
 
@@ -77,14 +129,13 @@ class _ShoppingCartScreenState extends State<ShoppingCartScreen> {
     return Container(
       padding: EdgeInsets.all(16),
       decoration: BoxDecoration(
-        border: Border.all(color: Colors.black),
         borderRadius: BorderRadius.circular(8),
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Image.network(
-            'https://example.com/pizza_calabresa.jpg', // Substitua pela URL da imagem real
+            'https://t3.gstatic.com/licensed-image?q=tbn:ANd9GcQcHbxCjB7FY6Rttw1VZFdh0gIZmm4MLLjfmD0dhA11saxBKG_D49VVkmlvz3sE71-b', // Substitua pela URL da imagem real
             height: 100,
             width: 100,
             fit: BoxFit.cover,
