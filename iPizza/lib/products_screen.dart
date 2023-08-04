@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:ipizza/cart_screen.dart';
+import 'package:ipizza/model/estabelecimento.dart';
+import 'package:ipizza/service/service.dart';
 import 'summary_screen.dart';
 import 'model/products.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert' as convert;
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({required this.title});
-  final String title;
-
-  @override
-  State<MyHomePage> createState() => _MyHomePageState();
+void main() {
+  runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
@@ -26,16 +26,72 @@ class MyApp extends StatelessWidget {
   }
 }
 
+class MyHomePage extends StatefulWidget {
+  const MyHomePage({required this.title});
+  final String title;
+
+  @override
+  State<MyHomePage> createState() => _MyHomePageState();
+}
+
 class _MyHomePageState extends State<MyHomePage> {
-  List<Product> produtos = getMockProducts();
+  List<Produto> produtos = [];
+
+  @override
+  void initState() {
+    super.initState();
+    fetchEstabelecimentoInfo();
+  }
+
+  Future<void> fetchEstabelecimentoInfo() async {
+    Response? response = await getEstabelecimentoInfoApi();
+    if (response != null) {
+      Data data = response.data;
+      List<Unidade> unidades = data.listaUnidades;
+      List<Produto> cardapio = [];
+
+      // Loop through the unidades and add the cardapio of each unidade to the list
+      for (Unidade unidade in unidades) {
+        cardapio.addAll(unidade.cardapio);
+      }
+
+      print('Unidades: $unidades');
+      print('Cardapio: $cardapio');
+
+      // Do something with the cardapio list or other data
+      // For example, you can update the state with the fetched data
+      setState(() {
+        produtos = cardapio;
+      });
+    } else {
+      // Handle the case when the request fails
+      // You can show an error message or take other actions
+      print('Falha ao obter dados da API.');
+    }
+  }
+
+  Map<String, List<Produto>> groupProductsByCategory(List<Produto> products) {
+    Map<String, List<Produto>> groupedProducts = {};
+
+    for (Produto product in products) {
+      if (groupedProducts.containsKey(product.categoriaProduto)) {
+        groupedProducts[product.categoriaProduto]!.add(product);
+      } else {
+        groupedProducts[product.categoriaProduto] = [product];
+      }
+    }
+
+    return groupedProducts;
+  }
 
   @override
   Widget build(BuildContext context) {
+    Map<String, List<Produto>> groupedProducts = groupProductsByCategory(produtos);
+
     return DefaultTabController(
-      length: ProductCategory.values.length,
+      length: groupedProducts.keys.length,
       child: Scaffold(
         appBar: AppBar(
-          // backgroundColor: Colors.red,
           title: Image.network(
             'https://i.postimg.cc/C5TXM2Q6/logo.png',
             height: 70,
@@ -50,7 +106,6 @@ class _MyHomePageState extends State<MyHomePage> {
                   context,
                   MaterialPageRoute(builder: (context) => CartScreen()),
                 );
-                // Adicione aqui a função para abrir a tela de carrinho de compras
               },
             ),
           ],
@@ -58,28 +113,21 @@ class _MyHomePageState extends State<MyHomePage> {
             labelColor: Colors.red,
             indicatorColor: Colors.red,
             isScrollable: true,
-            tabs: ProductCategory.values.map((category) {
-              return Tab(text: category.categoryText);
+            tabs: groupedProducts.keys.map((category) {
+              return Tab(text: category);
             }).toList(),
           ),
         ),
         body: Padding(
           padding: const EdgeInsets.only(top: 30, left: 20, right: 20),
           child: TabBarView(
-            children: ProductCategory.values.map((category) {
-              List<Product> produtosCategoria =
-                  produtos.where((p) => p.productCategory == category).toList();
 
+            children: groupedProducts.keys.map((category) {
+              List<Produto> products = groupedProducts[category]!;
               return ListView.builder(
-                itemCount: produtosCategoria.length,
+                itemCount: products.length,
                 itemBuilder: (context, index) {
-                  if (index.isOdd) {
-                    return const Divider(
-                      thickness: 0.1,
-                      color: Colors.grey,
-                    );
-                  }
-                  Product product = produtosCategoria[index];
+                  Produto product = products[index];
 
                   return Padding(
                     padding: const EdgeInsets.all(8.0),
@@ -87,7 +135,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       product: product,
                       onQuantityChanged: (newQuantity) {
                         setState(() {
-                          product.quantity = newQuantity;
+                          // product.quantity = newQuantity;
                         });
                       },
                     ),
@@ -96,81 +144,18 @@ class _MyHomePageState extends State<MyHomePage> {
               );
             }).toList(),
           ),
+
         ),
-        bottomNavigationBar: Container(
-            decoration: const BoxDecoration(
-              color: Colors.white,
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black,
-                  blurRadius: 15.0,
-                  offset: Offset(3.0, 3.0),
-                ),
-              ],
-            ),
-            child: Padding(
-              padding: const EdgeInsets.only(top: 16, bottom: 32, left: 8, right: 8),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text.rich(
-                    TextSpan(
-                      text: 'Total sem a entrega\n',
-                      style: const TextStyle(
-                          fontWeight: FontWeight.normal, fontSize: 12),
-                      children: <TextSpan>[
-                        TextSpan(
-                          text: 'R\$ ${calculateTotal().toStringAsFixed(2)}',
-                          style: const TextStyle(
-                              fontWeight: FontWeight.bold, fontSize: 16),
-                        )
-                      ],
-                    ),
-                  ),
-                  MaterialButton(
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => SummaryScreen()),
-                      );
-                      // Adicione aqui a função para finalizar a compra
-                    },
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8.0),
-                    ),
-                    color: Colors.red,
-                    minWidth: 150,
-                    child: const Padding(
-                      padding: EdgeInsets.all(8.0),
-                      child: Text(
-                        'Ver carrinho',
-                        style: TextStyle(color: Colors.white),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
       ),
     );
-  }
-
-  double calculateTotal() {
-    double total = 0;
-    for (Product product in produtos) {
-      total += product.valor * product.quantity;
-    }
-    return total;
   }
 }
 
 class ProductListItem extends StatefulWidget {
-  final Product product;
+  final Produto product;
   final Function(int) onQuantityChanged;
 
-  const ProductListItem(
-      {required this.product, required this.onQuantityChanged});
+  const ProductListItem({required this.product, required this.onQuantityChanged});
 
   @override
   _ProductListItemState createState() => _ProductListItemState();
@@ -200,23 +185,23 @@ class _ProductListItemState extends State<ProductListItem> {
                 backgroundColor: Colors.white,
               );
             },
-            child: const Column(
+            child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Pizza de Calabresa com Mussarela',
+                  widget.product.tituloProduto,
                   style: TextStyle(
                     fontSize: 14,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
                 Text(
-                  'Mussarela, Calabresa e azeitona. * todas as nossas pizzas possuem gergelim na borda.',
+                  widget.product.descricaoProduto,
                   style: TextStyle(fontSize: 14),
                 ),
                 SizedBox(height: 16),
                 Text(
-                  "R\$ 59,99",
+                  "R\$ ${widget.product.valorProduto.toStringAsFixed(2)}",
                 )
               ],
             ),
@@ -228,12 +213,9 @@ class _ProductListItemState extends State<ProductListItem> {
             width: 110,
             height: 80,
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(
-                  8), // Define o raio de curvatura dos cantos
+              borderRadius: BorderRadius.circular(8),
               image: DecorationImage(
-                image: NetworkImage(
-                  "https://t3.gstatic.com/licensed-image?q=tbn:ANd9GcQcHbxCjB7FY6Rttw1VZFdh0gIZmm4MLLjfmD0dhA11saxBKG_D49VVkmlvz3sE71-b",
-                ),
+                image: NetworkImage('https://t3.gstatic.com/licensed-image?q=tbn:ANd9GcQcHbxCjB7FY6Rttw1VZFdh0gIZmm4MLLjfmD0dhA11saxBKG_D49VVkmlvz3sE71-b'),
                 fit: BoxFit.cover,
               ),
             ),
