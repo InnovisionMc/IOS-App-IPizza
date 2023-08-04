@@ -4,7 +4,7 @@ import 'dart:convert' as convert;
 import '../model/estabelecimento.dart';
 
 Future<Response?> getEstabelecimentoInfoApi() async {
-  var url = Uri.https('carlos2832.c34.integrator.host', '/informacoesEstabelecimento/pizzaria-estellas');
+  var url = Uri.https('itasty.site', '/informacoesEstabelecimento/pizzaria-estellas');
 
   var response = await http.get(url);
   if (response.statusCode == 200) {
