@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:ipizza/screen/home/products_screen.dart';
+import 'package:ipizza/screen/splash/splash_screen.dart';
 
 import 'model/products.dart';
 
@@ -14,12 +15,12 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'iTasty',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.red),
         useMaterial3: true,
       ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      home: SplashScreen(),
     );
   }
 }
