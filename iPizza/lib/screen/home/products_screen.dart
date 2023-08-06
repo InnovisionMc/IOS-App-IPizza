@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:ipizza/cart_screen.dart';
 import 'package:ipizza/model/estabelecimento.dart';
+import 'package:ipizza/screen/home/product_item.dart';
 import 'package:ipizza/service/service.dart';
-import 'summary_screen.dart';
-import 'model/products.dart';
+import '../../summary_screen.dart';
+import '../../model/products.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert' as convert;
 
@@ -21,7 +22,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.red,
       ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      home: const MyHomePage(title: 'Flutter Demo Homes Page'),
     );
   }
 }
@@ -147,81 +148,6 @@ class _MyHomePageState extends State<MyHomePage> {
 
         ),
       ),
-    );
-  }
-}
-
-class ProductListItem extends StatefulWidget {
-  final Produto product;
-  final Function(int) onQuantityChanged;
-
-  const ProductListItem({required this.product, required this.onQuantityChanged});
-
-  @override
-  _ProductListItemState createState() => _ProductListItemState();
-}
-
-class _ProductListItemState extends State<ProductListItem> {
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      children: [
-        Expanded(
-          child: GestureDetector(
-            onTap: () {
-              showModalBottomSheet(
-                context: context,
-                builder: (BuildContext context) {
-                  return Container(
-                    height: 200.0,
-                    color: Colors.white,
-                    child: new Center(
-                      child: new Text('This is a bottom sheet.'),
-                    ),
-                  );
-                },
-                isDismissible: true,
-                showDragHandle: true,
-                backgroundColor: Colors.white,
-              );
-            },
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  widget.product.tituloProduto,
-                  style: TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                Text(
-                  widget.product.descricaoProduto,
-                  style: TextStyle(fontSize: 14),
-                ),
-                SizedBox(height: 16),
-                Text(
-                  "R\$ ${widget.product.valorProduto.toStringAsFixed(2)}",
-                )
-              ],
-            ),
-          ),
-        ),
-        Padding(
-          padding: const EdgeInsets.only(left: 8.0),
-          child: Container(
-            width: 110,
-            height: 80,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(8),
-              image: DecorationImage(
-                image: NetworkImage('https://t3.gstatic.com/licensed-image?q=tbn:ANd9GcQcHbxCjB7FY6Rttw1VZFdh0gIZmm4MLLjfmD0dhA11saxBKG_D49VVkmlvz3sE71-b'),
-                fit: BoxFit.cover,
-              ),
-            ),
-          ),
-        ),
-      ],
     );
   }
 }
