@@ -88,67 +88,11 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     Map<String, List<Produto>> groupedProducts =
-        groupProductsByCategory(produtos);
+    groupProductsByCategory(produtos);
 
     return DefaultTabController(
       length: groupedProducts.keys.length,
       child: Scaffold(
-        bottomNavigationBar: Container(
-          decoration: const BoxDecoration(
-            color: Colors.white,
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black,
-                blurRadius: 15.0,
-                offset: Offset(3.0, 3.0),
-              ),
-            ],
-          ),
-          child: Padding(
-            padding:
-                const EdgeInsets.only(top: 16, bottom: 32, left: 8, right: 8),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text.rich(
-                  TextSpan(
-                    text: 'Total sem a entrega\n',
-                    style: const TextStyle(
-                        fontWeight: FontWeight.normal, fontSize: 12),
-                    children: <TextSpan>[
-                      TextSpan(
-                        text: 'R\$ 0,00',
-                        style: const TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 16),
-                      )
-                    ],
-                  ),
-                ),
-                MaterialButton(
-                  onPressed: () {
-                    // Navigator.push(
-                    //   context,
-                    //   MaterialPageRoute(builder: (context) => ShoppingCartScreen()),
-                    // );
-                    // Adicione aqui a função para finalizar a compra
-                  },
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8.0),
-                  ),
-                  color: Colors.red,
-                  minWidth: 150,
-                  child: const Padding(
-                    padding: EdgeInsets.all(8.0),
-                    child: Text(
-                      'Ver carrinho',
-                      style: TextStyle(color: Colors.white),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
         appBar: AppBar(
           title: Image.network(
             'https://i.postimg.cc/C5TXM2Q6/logo.png',
@@ -162,7 +106,7 @@ class _MyHomePageState extends State<MyHomePage> {
               onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => CartScreen()),
+                  MaterialPageRoute(builder: (context) => ShoppingCartScreen()),
                 );
               },
             ),
@@ -176,31 +120,92 @@ class _MyHomePageState extends State<MyHomePage> {
             }).toList(),
           ),
         ),
-        body: Padding(
-          padding: const EdgeInsets.only(top: 30, left: 20, right: 20),
-          child: TabBarView(
-            children: groupedProducts.keys.map((category) {
-              List<Produto> products = groupedProducts[category]!;
-              return ListView.builder(
-                itemCount: products.length,
-                itemBuilder: (context, index) {
-                  Produto product = products[index];
+        body: Stack(
+          children: [
+            TabBarView(
+              children: groupedProducts.keys.map((category) {
+                List<Produto> products = groupedProducts[category]!;
+                return ListView.builder(
+                  itemCount: products.length,
+                  itemBuilder: (context, index) {
+                    Produto product = products[index];
 
-                  return Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: ProductListItem(
-                      product: product,
-                      onQuantityChanged: (newQuantity) {
-                        setState(() {
-                          // product.quantity = newQuantity;
-                        });
-                      },
+                    return Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: ProductListItem(
+                        product: product,
+                        onQuantityChanged: (newQuantity) {
+                          setState(() {
+                            // product.quantity = newQuantity;
+                          });
+                        },
+                      ),
+                    );
+                  },
+                );
+              }).toList(),
+            ),
+            Positioned(
+              left: 0,
+              right: 0,
+              bottom: 0,
+              child: Container(
+                decoration: const BoxDecoration(
+                  color: Colors.white,
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black,
+                      blurRadius: 15.0,
+                      offset: Offset(3.0, 3.0),
                     ),
-                  );
-                },
-              );
-            }).toList(),
-          ),
+                  ],
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.only(top: 16, bottom: 32, left: 8, right: 8),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text.rich(
+                        TextSpan(
+                          text: 'Total sem a entrega\n',
+                          style: const TextStyle(
+                              fontWeight: FontWeight.normal, fontSize: 12),
+                          children: <TextSpan>[
+                            TextSpan(
+                              text: 'R\$ 0,00',
+                              style: const TextStyle(
+                                  fontWeight: FontWeight.bold, fontSize: 16),
+                            )
+                          ],
+                        ),
+                      ),
+                      MaterialButton(
+                        onPressed: () {
+                          // Navigator.push(
+                          //   context,
+                          //   MaterialPageRoute(builder: (context) => ShoppingCartScreen()),
+                          // );
+                          // Adicione aqui a função para finalizar a compra
+                        },
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8.0),
+                        ),
+                        color: Colors.red,
+                        minWidth: 150,
+                        child: const Padding(
+                          padding: EdgeInsets.all(8.0),
+                          child: Text(
+                            'Ver carrinho',
+                            style: TextStyle(color: Colors.white),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ],
         ),
       ),
     );
