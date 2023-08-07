@@ -24,9 +24,9 @@ class _ShoppingCartScreenState extends State<ShoppingCartScreen> {
         ),
         actions: [
           Padding(
-            padding: EdgeInsets.only(right: 8.0),
+            padding: EdgeInsets.only(right: 30.0),
             child: IconButton(
-              icon: Icon(Icons.delete_forever),
+              icon: Icon(Icons.delete),
               color: Colors.red,
               onPressed: () {
                 //adicionar logica para limpar tela
@@ -66,10 +66,6 @@ class _ShoppingCartScreenState extends State<ShoppingCartScreen> {
                   ),
                 ],
               ),
-              SizedBox(height: 20),
-              Text('Valor total: R\$ $totalValue',
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
-              SizedBox(height: 20),
             ],
           ),
         ),
@@ -94,15 +90,15 @@ class _ShoppingCartScreenState extends State<ShoppingCartScreen> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              const Text.rich(
+                Text.rich(
                 TextSpan(
                   text: 'Total sem a entrega\n',
-                  style: TextStyle(
+                  style: const TextStyle(
                       fontWeight: FontWeight.normal, fontSize: 12),
                   children: <TextSpan>[
                     TextSpan(
-                      text: 'R\$ 00,00',
-                      style: TextStyle(
+                      text: 'R\$ $totalValue',
+                      style: const TextStyle(
                           fontWeight: FontWeight.bold, fontSize: 16),
                     )
                   ],
@@ -155,8 +151,7 @@ class _ShoppingCartScreenState extends State<ShoppingCartScreen> {
                   8),
               image: const DecorationImage(
                 image: NetworkImage("https://t3.gstatic.com/licensed-image?q=tbn:ANd9GcQcHbxCjB7FY6Rttw1VZFdh0gIZmm4MLLjfmD0dhA11saxBKG_D49VVkmlvz3sE71-b"),
-                fit: BoxFit.cover,
-              ),
+                fit: BoxFit.cover,),
             ),
           ),
 
