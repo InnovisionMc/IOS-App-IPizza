@@ -83,7 +83,6 @@ class Produto {
   final double valorProduto;
   final double valorProdutoComDesconto;
   final String categoriaProduto;
-  final bool isPromotion;
   final List<ItemAdicional> itensAdicionais;
 
   Produto({
@@ -92,7 +91,6 @@ class Produto {
     required this.valorProduto,
     required this.valorProdutoComDesconto,
     required this.categoriaProduto,
-    required this.isPromotion,
     required this.itensAdicionais,
   });
 
@@ -103,7 +101,6 @@ class Produto {
       valorProduto: json['valorProduto'].toDouble(),
       valorProdutoComDesconto: json['valorProdutoComDesconto'].toDouble(),
       categoriaProduto: json['categoriaProduto'],
-      isPromotion: json['isPromotion'],
       itensAdicionais: (json['itensAdicionais'] as List).map((i) => ItemAdicional.fromJson(i)).toList(),
     );
   }
