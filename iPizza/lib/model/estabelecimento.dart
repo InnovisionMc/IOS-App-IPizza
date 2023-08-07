@@ -83,16 +83,16 @@ class Produto {
   final double valorProduto;
   final double valorProdutoComDesconto;
   final String categoriaProduto;
-  final bool isPromotion;
+  final String urlImagemProduto;
   final List<ItemAdicional> itensAdicionais;
 
   Produto({
     required this.tituloProduto,
     required this.descricaoProduto,
     required this.valorProduto,
+    required this.urlImagemProduto,
     required this.valorProdutoComDesconto,
     required this.categoriaProduto,
-    required this.isPromotion,
     required this.itensAdicionais,
   });
 
@@ -101,9 +101,9 @@ class Produto {
       tituloProduto: json['tituloProduto'],
       descricaoProduto: json['descricaoProduto'],
       valorProduto: json['valorProduto'].toDouble(),
+      urlImagemProduto: json['urlImagemProduto'],
       valorProdutoComDesconto: json['valorProdutoComDesconto'].toDouble(),
       categoriaProduto: json['categoriaProduto'],
-      isPromotion: json['isPromotion'],
       itensAdicionais: (json['itensAdicionais'] as List).map((i) => ItemAdicional.fromJson(i)).toList(),
     );
   }
@@ -112,16 +112,19 @@ class Produto {
 class ItemAdicional {
   final String tituloItemAdicional;
   final double valorItemAdicional;
+  final String descricaoItemAdicional;
 
   ItemAdicional({
     required this.tituloItemAdicional,
     required this.valorItemAdicional,
+    required this.descricaoItemAdicional,
   });
 
   factory ItemAdicional.fromJson(Map<String, dynamic> json) {
     return ItemAdicional(
       tituloItemAdicional: json['tituloItemAdicional'],
       valorItemAdicional: json['valorItemAdicional'].toDouble(),
+        descricaoItemAdicional: json['descricaoItemAdicional']
     );
   }
 }

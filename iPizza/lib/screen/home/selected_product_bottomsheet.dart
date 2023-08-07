@@ -4,8 +4,15 @@ import 'package:intl/intl.dart';
 
 class SelectedProductBottomSheet extends StatefulWidget {
   final Produto product;
-  const SelectedProductBottomSheet({Key? key, required this.product})
-      : super(key: key);
+  final Function(List<int>) onQuantityChanged;
+  final Function(double) onTotalChanged;
+
+  const SelectedProductBottomSheet({
+    Key? key,
+    required this.product,
+    required this.onQuantityChanged,
+    required this.onTotalChanged,
+  }) : super(key: key);
 
   @override
   State<SelectedProductBottomSheet> createState() =>
@@ -14,23 +21,22 @@ class SelectedProductBottomSheet extends StatefulWidget {
 
 class _SelectedProductBottomSheetState
     extends State<SelectedProductBottomSheet> {
-  late List<int> selectedQuantities;
-  late List<bool> addButtonsPressed;
   final formatCurrency = NumberFormat.simpleCurrency(locale: 'pt_BR');
+  List<int> selectedQuantities = [];
 
   @override
   void initState() {
     super.initState();
-    selectedQuantities = List.filled(widget.product.itensAdicionais.length, 0);
-    addButtonsPressed =
-        List.filled(widget.product.itensAdicionais.length, false);
+    selectedQuantities =
+        List.filled(widget.product.itensAdicionais.length, 0);
   }
 
-  double get totalAdditionalItems {
-    double total = 0;
+  double get totalValue {
+    double total = widget.product.valorProduto;
     for (var i = 0; i < widget.product.itensAdicionais.length; i++) {
-      total += widget.product.itensAdicionais[i].valorItemAdicional *
-          selectedQuantities[i];
+      total +=
+          widget.product.itensAdicionais[i].valorItemAdicional *
+              selectedQuantities[i];
     }
     return total;
   }
@@ -142,11 +148,12 @@ class _SelectedProductBottomSheetState
             ),
             Expanded(
               child: ListView.builder(
-                itemCount: widget.product.itensAdicionais.length, // Tamanho da lista
+                itemCount: widget.product.itensAdicionais.length,
                 itemBuilder: (context, index) {
                   var item = widget.product.itensAdicionais[index];
                   String descricaoAleatoria =
-                      'Descrição aleatória para ' + item.tituloItemAdicional;
+                      'Descrição aleatória para ' +
+                          item.tituloItemAdicional;
                   return ListTile(
                     title: Text(
                       item.tituloItemAdicional,
@@ -155,7 +162,7 @@ class _SelectedProductBottomSheetState
                     subtitle: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(descricaoAleatoria),
+                        Text(widget.product.itensAdicionais[index].descricaoItemAdicional),
                         Padding(
                           padding: const EdgeInsets.only(top: 8.0),
                           child: Text(
@@ -172,21 +179,20 @@ class _SelectedProductBottomSheetState
                         child: Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            if (addButtonsPressed[index])
+                            if (selectedQuantities[index] > 0)
                               IconButton(
                                 color: Colors.white,
                                 icon: Icon(Icons.remove),
-                                onPressed: selectedQuantities[index] > 0
-                                    ? () {
+                                onPressed: () {
                                   setState(() {
-                                    selectedQuantities[index]--;
-                                    if (selectedQuantities[index] == 0)
-                                      addButtonsPressed[index] = false;
+                                    if (selectedQuantities[index] > 0) {
+                                      selectedQuantities[index]--;
+                                    }
                                   });
-                                }
-                                    : null,
+                                  widget.onTotalChanged(totalValue);
+                                },
                               ),
-                            if (addButtonsPressed[index])
+                            if (selectedQuantities[index] > 0)
                               Padding(
                                 padding: const EdgeInsets.all(8.0),
                                 child: Text(
@@ -200,8 +206,8 @@ class _SelectedProductBottomSheetState
                               onPressed: () {
                                 setState(() {
                                   selectedQuantities[index]++;
-                                  addButtonsPressed[index] = true;
                                 });
+                                widget.onTotalChanged(totalValue);
                               },
                             ),
                           ],
@@ -224,9 +230,10 @@ class _SelectedProductBottomSheetState
                     padding: const EdgeInsets.all(16.0),
                     child: ElevatedButton(
                       child: Padding(
-                        padding: const EdgeInsets.only(top: 12.0, bottom: 12.0),
+                        padding: const EdgeInsets.only(
+                            top: 12.0, bottom: 12.0),
                         child: Text(
-                          'Adicionar ${formatCurrency.format(widget.product.valorProduto + totalAdditionalItems)}',
+                          'Adicionar ${formatCurrency.format(totalValue)}',
                           style: TextStyle(color: Colors.white),
                         ),
                       ),
@@ -241,6 +248,7 @@ class _SelectedProductBottomSheetState
                         ),
                       ),
                       onPressed: () {
+                        widget.onQuantityChanged(selectedQuantities);
                         // Adicionar o produto ao carrinho
                         // ...
                         // Fechar o BottomSheet

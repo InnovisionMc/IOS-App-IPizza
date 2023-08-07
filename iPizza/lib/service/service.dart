@@ -8,10 +8,10 @@ Future<Response?> getEstabelecimentoInfoApi() async {
 
   var response = await http.get(url);
   if (response.statusCode == 200) {
-    var jsonResponse = convert.jsonDecode(response.body) as Map<String, dynamic>;
-    print(jsonResponse);
-    return Response.fromJson(jsonResponse);
-
+    var jsonResponse = convert.utf8.decode(response.bodyBytes);
+    var decodedResponse = convert.jsonDecode(jsonResponse) as Map<String, dynamic>;
+    print(decodedResponse);
+    return Response.fromJson(decodedResponse);
   } else {
     print('Request failed with status: ${response.statusCode}.');
     return null;
