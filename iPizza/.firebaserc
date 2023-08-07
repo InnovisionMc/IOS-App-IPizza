@@ -1,5 +1,15 @@
 {
   "projects": {
     "default": "restaurant-613fd"
-  }
+  },
+  "targets": {
+    "restaurant-613fd": {
+      "hosting": {
+        "estella": [
+          "pizzaria-estella"
+        ]
+      }
+    }
+  },
+  "etags": {}
 }

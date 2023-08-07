@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:ipizza/screen/home/selected_product_bottomsheet.dart';
 import '../../model/estabelecimento.dart';
-import 'selected_product_bottomsheet.dart';
 
 class ProductListItem extends StatefulWidget {
   final Produto product;
-  final Function(int) onQuantityChanged;
+  final Function(int, List<int>) onQuantityChanged;
 
   const ProductListItem({required this.product, required this.onQuantityChanged});
 
@@ -13,6 +13,14 @@ class ProductListItem extends StatefulWidget {
 }
 
 class _ProductListItemState extends State<ProductListItem> {
+  List<int> selectedQuantities = [];
+
+  @override
+  void initState() {
+    super.initState();
+    selectedQuantities = List.filled(widget.product.itensAdicionais.length, 0);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -22,7 +30,18 @@ class _ProductListItemState extends State<ProductListItem> {
             showBottomSheet(
               context: context,
               builder: (BuildContext context) {
-                return SelectedProductBottomSheet(product: widget.product);
+                return SelectedProductBottomSheet(
+                  product: widget.product,
+                  onTotalChanged: (totalValue) {
+                    // Implementar a ação desejada quando o total for alterado
+                  },
+                  onQuantityChanged: (newQuantity) {
+                    setState(() {
+                      selectedQuantities = newQuantity;
+                    });
+                    widget.onQuantityChanged(newQuantity.reduce((a, b) => a + b), selectedQuantities);
+                  },
+                );
               },
               backgroundColor: Colors.white,
             );

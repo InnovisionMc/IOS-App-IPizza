@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:ipizza/cart_screen.dart';
 import 'package:ipizza/model/estabelecimento.dart';
 import 'package:ipizza/screen/home/product_item.dart';
 import 'package:ipizza/service/service.dart';
+import '../../model/cart.dart';
 import '../../summary_screen.dart';
 import '../../model/products.dart';
 import 'package:http/http.dart' as http;
@@ -37,6 +39,7 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   List<Produto> produtos = [];
+  ShoppingCart shoppingCart = ShoppingCart();
 
   @override
   void initState() {
@@ -134,9 +137,9 @@ class _MyHomePageState extends State<MyHomePage> {
                       padding: const EdgeInsets.all(8.0),
                       child: ProductListItem(
                         product: product,
-                        onQuantityChanged: (newQuantity) {
+                        onQuantityChanged: (newQuantity, selectedQuantities) {
                           setState(() {
-                            // product.quantity = newQuantity;
+                            shoppingCart.addItem(product, newQuantity, selectedQuantities);
                           });
                         },
                       ),
@@ -172,7 +175,7 @@ class _MyHomePageState extends State<MyHomePage> {
                               fontWeight: FontWeight.normal, fontSize: 12),
                           children: <TextSpan>[
                             TextSpan(
-                              text: 'R\$ 0,00',
+                              text: 'R\$ ${shoppingCart.totalAmount.toStringAsFixed(2)}',
                               style: const TextStyle(
                                   fontWeight: FontWeight.bold, fontSize: 16),
                             )
