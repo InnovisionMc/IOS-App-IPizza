@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:ipizza/screen/home/selected_product_bottomsheet.dart';
+import 'package:shimmer/shimmer.dart';
 import '../../model/estabelecimento.dart';
 
 class ProductListItem extends StatefulWidget {
