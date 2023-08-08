@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:ipizza/screen/home/selected_product_bottomsheet.dart';
 import '../../model/estabelecimento.dart';
 
@@ -14,6 +15,7 @@ class ProductListItem extends StatefulWidget {
 
 class _ProductListItemState extends State<ProductListItem> {
   List<int> selectedQuantities = [];
+  final formatCurrency = NumberFormat.simpleCurrency(locale: 'pt_BR');
 
   @override
   void initState() {
@@ -27,24 +29,68 @@ class _ProductListItemState extends State<ProductListItem> {
       children: [
         InkWell(
           onTap: () {
-            showBottomSheet(
-              context: context,
-              builder: (BuildContext context) {
-                return SelectedProductBottomSheet(
-                  product: widget.product,
-                  onTotalChanged: (totalValue) {
-                    // Implementar a ação desejada quando o total for alterado
-                  },
-                  onQuantityChanged: (newQuantity) {
-                    setState(() {
-                      selectedQuantities = newQuantity;
-                    });
-                    widget.onQuantityChanged(newQuantity.reduce((a, b) => a + b), selectedQuantities);
-                  },
-                );
-              },
-              backgroundColor: Colors.white,
-            );
+            if (widget.product.itensAdicionais.isEmpty) {
+              showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  return Theme(
+                    data: ThemeData(dialogBackgroundColor: Colors.white),
+                    child: AlertDialog(
+                      title: Text('Confirmação'),
+                      backgroundColor: Colors.white,
+                      content: Text('Você deseja adicionar este item ao seu pedido?'),
+                      actions: <Widget>[
+                        Padding(
+                          padding: const EdgeInsets.only(bottom: 18.0, right: 8.0),
+                          child: TextButton(
+                            child: Text('CANCELAR', style: TextStyle(color: Colors.red)),
+                            onPressed: () {
+                              Navigator.of(context).pop(); // Fecha o alerta
+                            },
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(bottom: 18.0, right: 18.0),
+                          child: MaterialButton(
+                            onPressed: () {
+                              widget.onQuantityChanged(1, []);
+                              Navigator.of(context).pop();
+                            },
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8.0),
+                            ),
+                            color: Colors.red,
+                            minWidth: 150,
+                            child: const Padding(
+                              padding: EdgeInsets.all(8.0),
+                              child: Text('ADICIONAR', style: TextStyle(color: Colors.white)),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  );
+                },
+              );
+            } else {
+              showBottomSheet(
+                context: context,
+                builder: (BuildContext context) {
+                  return SelectedProductBottomSheet(
+                    product: widget.product,
+                    onTotalChanged: (totalValue) {},
+                    onQuantityChanged: (newQuantity) {
+                      setState(() {
+                        selectedQuantities = newQuantity;
+                      });
+                      int totalQuantity = newQuantity.isNotEmpty ? newQuantity.reduce((a, b) => a + b) : 0;
+                      widget.onQuantityChanged(totalQuantity, selectedQuantities);
+                    },
+                  );
+                },
+                backgroundColor: Colors.white,
+              );
+            }
           },
           child: Row(
             children: [
@@ -64,9 +110,28 @@ class _ProductListItemState extends State<ProductListItem> {
                       style: TextStyle(fontSize: 14),
                     ),
                     SizedBox(height: 16),
-                    Text(
-                      "R\$ ${widget.product.valorProduto.toStringAsFixed(2)}",
-                    )
+                    Row(
+                      children: [
+                        if (widget.product.valorProdutoComDesconto != 0)
+                          Padding(
+                            padding: const EdgeInsets.only(right: 8.0),
+                            child: Text(
+                              " ${formatCurrency.format(widget.product.valorProdutoComDesconto)}",
+                              style: TextStyle(
+                                color: Colors.green[800],
+                              ),
+                            ),
+                          ),
+                        Text(
+                          " ${formatCurrency.format(widget.product.valorProduto)}",
+                          style: TextStyle(
+                            color: widget.product.valorProdutoComDesconto != 0 ? Colors.grey : Colors.black,
+                            decoration: widget.product.valorProdutoComDesconto != 0 ? TextDecoration.lineThrough : TextDecoration.none,
+                            fontSize: widget.product.valorProdutoComDesconto != 0 ? 12: 15
+                          ),
+                        ),
+                      ],
+                    ),
                   ],
                 ),
               ),
@@ -90,11 +155,11 @@ class _ProductListItemState extends State<ProductListItem> {
         Padding(
           padding: const EdgeInsets.only(top: 18.0),
           child: Divider(
-            color: Colors.grey[200], // Define a cor do Divider como cinza claro
-            height: 1, // Define a altura do Divider (espessura)
-            thickness: 1, // Define a espessura do Divider
-            indent: 8, // Define o espaçamento à esquerda do Divider
-            endIndent: 8, // Define o espaçamento à direita do Divider
+            color: Colors.grey[200],
+            height: 1,
+            thickness: 1,
+            indent: 8,
+            endIndent: 8,
           ),
         ),
       ],

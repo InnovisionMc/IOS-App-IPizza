@@ -33,13 +33,19 @@ class _SelectedProductBottomSheetState
 
   double get totalValue {
     double total = widget.product.valorProduto;
-    for (var i = 0; i < widget.product.itensAdicionais.length; i++) {
-      total +=
-          widget.product.itensAdicionais[i].valorItemAdicional *
-              selectedQuantities[i];
+    double totalItensAdicionais = 0.0;
+
+    if(widget.product.itensAdicionais.isNotEmpty) {
+      for (var i = 0; i < widget.product.itensAdicionais.length; i++) {
+        totalItensAdicionais +=
+            widget.product.itensAdicionais[i].valorItemAdicional *
+                selectedQuantities[i];
+      }
     }
-    return total;
+
+    return total + totalItensAdicionais;
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -151,9 +157,6 @@ class _SelectedProductBottomSheetState
                 itemCount: widget.product.itensAdicionais.length,
                 itemBuilder: (context, index) {
                   var item = widget.product.itensAdicionais[index];
-                  String descricaoAleatoria =
-                      'Descrição aleatória para ' +
-                          item.tituloItemAdicional;
                   return ListTile(
                     title: Text(
                       item.tituloItemAdicional,

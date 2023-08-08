@@ -5,21 +5,34 @@ class ShoppingCart {
 
   double get totalAmount {
     double total = 0;
+    double totalItensAdicionais = 0;
     for (var item in items) {
-      total += item.subtotal;
+
+      for (var adicional in item.selectedAdditions) {
+        totalItensAdicionais += adicional.valorItemAdicional;
+      }
+
+      total += item.product.valorProduto;
     }
-    return total;
+    return total + totalItensAdicionais;
   }
 
   void addItem(Produto product, int quantity, List<int> selectedQuantities) {
     List<ItemAdicional> selectedAdditions = [];
-    for (var i = 0; i < selectedQuantities.length; i++) {
-      if (selectedQuantities[i] > 0) {
-        selectedAdditions.add(product.itensAdicionais[i]);
+
+    if(product.itensAdicionais.isNotEmpty) {
+      for (var i = 0; i < selectedQuantities.length; i++) {
+        for (var j = 0; j < selectedQuantities[i]; j++) {
+          selectedAdditions.add(product.itensAdicionais[i]);
+        }
       }
     }
+
     items.add(CartItem(product, quantity, selectedAdditions));
   }
+
+
+
 }
 
 class CartItem {
@@ -30,12 +43,13 @@ class CartItem {
   CartItem(this.product, this.quantity, this.selectedAdditions);
 
   double get subtotal {
-    double total = product.valorProduto;
+    double total = product.valorProduto * quantity;
 
     for (var addition in selectedAdditions) {
       total += addition.valorItemAdicional;
     }
 
-    return total * quantity;
+    return total;
   }
 }
+
