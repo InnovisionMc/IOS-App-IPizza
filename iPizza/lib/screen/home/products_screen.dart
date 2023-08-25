@@ -4,7 +4,7 @@ import 'package:ipizza/cart_screen.dart';
 import 'package:ipizza/model/estabelecimento.dart';
 import 'package:ipizza/screen/home/product_item.dart';
 import 'package:ipizza/service/service.dart';
-import 'package:shimmer/shimmer.dart';  // Não esqueça de importar
+// import 'package:shimmer/shimmer.dart';  // Não esqueça de importar
 import '../../model/cart.dart';
 import '../../summary_screen.dart';
 import '../../model/products.dart';
@@ -122,8 +122,8 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
         body: Stack(
           children: [
-            isLoading ? buildShimmerList(4) : buildProductList(groupedProducts),
-            if (shoppingCart.totalAmount > 0)
+            // isLoading ? buildShimmerList(4) : buildProductList(groupedProducts),
+            // if (shoppingCart.totalAmount > 0)
               Positioned(
                 left: 0,
                 right: 0,
@@ -186,83 +186,83 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
-  Widget buildShimmerItem() {
-    return Padding(
-      padding: const EdgeInsets.only(left: 18.0, right: 18.0, top: 18.0),
-      child: Shimmer.fromColors(
-        baseColor: Colors.grey[500]!,
-        highlightColor: Colors.grey[100]!,
-        child: Row(
-          children: [
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Container(
-                    height: 16,
-                    decoration: BoxDecoration(
-                      color: Colors.grey,
-                      borderRadius: BorderRadius.circular(8.0),
-                    ),
-                  ),
-                  SizedBox(height: 6),
-                  Container(
-                    height: 16,
-                    width: MediaQuery.of(context).size.width * 0.7,
-                    decoration: BoxDecoration(
-                      color: Colors.grey,
-                      borderRadius: BorderRadius.circular(8.0),
-                    ),
-                  ),
-                  SizedBox(height: 16),
-                  Row(
-                    children: [
-                      Container(
-                        height: 16,
-                        width: 40,
-                        decoration: BoxDecoration(
-                          color: Colors.grey,
-                          borderRadius: BorderRadius.circular(8.0),
-                        ),
-                      ),
-                      SizedBox(width: 8),
-                      Container(
-                        height: 16,
-                        width: 40,
-                        decoration: BoxDecoration(
-                          color: Colors.grey,
-                          borderRadius: BorderRadius.circular(8.0),
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-            SizedBox(width: 8),
-            Container(
-              width: 110,
-              height: 80,
-              decoration: BoxDecoration(
-                color: Colors.grey,
-                borderRadius: BorderRadius.circular(8.0),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-
-  Widget buildShimmerList(int itemCount) {
-    return ListView.builder(
-      itemCount: itemCount,
-      itemBuilder: (context, index) {
-        return buildShimmerItem();
-      },
-    );
-  }
+  // Widget buildShimmerItem() {
+  //   return Padding(
+  //     padding: const EdgeInsets.only(left: 18.0, right: 18.0, top: 18.0),
+  //     child: Shimmer.fromColors(
+  //       baseColor: Colors.grey[500]!,
+  //       highlightColor: Colors.grey[100]!,
+  //       child: Row(
+  //         children: [
+  //           Expanded(
+  //             child: Column(
+  //               crossAxisAlignment: CrossAxisAlignment.start,
+  //               children: [
+  //                 Container(
+  //                   height: 16,
+  //                   decoration: BoxDecoration(
+  //                     color: Colors.grey,
+  //                     borderRadius: BorderRadius.circular(8.0),
+  //                   ),
+  //                 ),
+  //                 SizedBox(height: 6),
+  //                 Container(
+  //                   height: 16,
+  //                   width: MediaQuery.of(context).size.width * 0.7,
+  //                   decoration: BoxDecoration(
+  //                     color: Colors.grey,
+  //                     borderRadius: BorderRadius.circular(8.0),
+  //                   ),
+  //                 ),
+  //                 SizedBox(height: 16),
+  //                 Row(
+  //                   children: [
+  //                     Container(
+  //                       height: 16,
+  //                       width: 40,
+  //                       decoration: BoxDecoration(
+  //                         color: Colors.grey,
+  //                         borderRadius: BorderRadius.circular(8.0),
+  //                       ),
+  //                     ),
+  //                     SizedBox(width: 8),
+  //                     Container(
+  //                       height: 16,
+  //                       width: 40,
+  //                       decoration: BoxDecoration(
+  //                         color: Colors.grey,
+  //                         borderRadius: BorderRadius.circular(8.0),
+  //                       ),
+  //                     ),
+  //                   ],
+  //                 ),
+  //               ],
+  //             ),
+  //           ),
+  //           SizedBox(width: 8),
+  //           Container(
+  //             width: 110,
+  //             height: 80,
+  //             decoration: BoxDecoration(
+  //               color: Colors.grey,
+  //               borderRadius: BorderRadius.circular(8.0),
+  //             ),
+  //           ),
+  //         ],
+  //       ),
+  //     ),
+  //   );
+  // }
+  //
+  //
+  // Widget buildShimmerList(int itemCount) {
+  //   return ListView.builder(
+  //     itemCount: itemCount,
+  //     itemBuilder: (context, index) {
+  //       return buildShimmerItem();
+  //     },
+  //   );
+  // }
 
 
   Widget buildProductList(Map<String, List<Produto>> groupedProducts) {
