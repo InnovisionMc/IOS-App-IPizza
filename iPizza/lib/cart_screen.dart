@@ -3,24 +3,30 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'summary_screen.dart';
 import 'model/products.dart';
 
+import 'package:flutter/material.dart';
+
 class ShoppingCartScreen extends StatefulWidget {
   @override
   _ShoppingCartScreenState createState() => _ShoppingCartScreenState();
 }
 
 class _ShoppingCartScreenState extends State<ShoppingCartScreen> {
-  int itemCount = 1;
-  double itemPrice = 52.0;
-  double totalValue = 00.0;
+  List<CartItem> cartItems = []; // Suponho que você tenha uma lista de itens no carrinho
 
   @override
   Widget build(BuildContext context) {
+    double totalValue = 0;
+
+    for (CartItem item in cartItems) {
+      totalValue += item.quantity * item.price;
+    }
+
     return Scaffold(
       appBar: AppBar(
         title: Image.network(
-            'https://i.postimg.cc/C5TXM2Q6/logo.png',
-            height: 70,
-            width: 70,
+          'https://i.postimg.cc/C5TXM2Q6/logo.png',
+          height: 70,
+          width: 70,
         ),
         actions: [
           Padding(
@@ -29,51 +35,22 @@ class _ShoppingCartScreenState extends State<ShoppingCartScreen> {
               icon: Icon(Icons.delete),
               color: Colors.red,
               onPressed: () {
-                //adicionar logica para limpar tela
+                // Adicione aqui a lógica para limpar o carrinho
+                setState(() {
+                  cartItems.clear();
+                });
               },
             ),
           ),
         ],
       ),
-
-
-
-
-
-
-      body: Padding(
-        padding: EdgeInsets.all(16.0),
-        child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              _buildItemWidget(),
-              SizedBox(height: 20),
-              Text('Peça também', style: TextStyle(fontSize: 20)),
-              SizedBox(height: 10),
-              _buildGenericItemsCarousel(),
-              SizedBox(height: 20),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text('Fidelidade', style: TextStyle(fontSize: 20)),
-                  TextButton(
-                    onPressed: () {
-                      // Lógica para ver mais
-                    },
-                    style: TextButton.styleFrom(primary: Colors.red),
-                    child: Text('Ver mais', style: TextStyle(color: Colors.red)),
-                  ),
-                ],
-              ),
-            ],
-          ),
-        ),
+      body: ListView.builder(
+        itemCount: cartItems.length,
+        itemBuilder: (context, index) {
+          CartItem cartItem = cartItems[index];
+          return _buildItemWidget(cartItem);
+        },
       ),
-
-
-
-
       bottomNavigationBar: Container(
         decoration: const BoxDecoration(
           color: Colors.white,
@@ -90,27 +67,22 @@ class _ShoppingCartScreenState extends State<ShoppingCartScreen> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-                Text.rich(
+              Text.rich(
                 TextSpan(
                   text: 'Total sem a entrega\n',
-                  style: const TextStyle(
-                      fontWeight: FontWeight.normal, fontSize: 12),
+                  style: const TextStyle(fontWeight: FontWeight.normal, fontSize: 12),
                   children: <TextSpan>[
                     TextSpan(
-                      text: 'R\$ $totalValue',
-                      style: const TextStyle(
-                          fontWeight: FontWeight.bold, fontSize: 16),
+                      text: 'R\$ ${totalValue.toStringAsFixed(2)}',
+                      style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                     )
                   ],
                 ),
               ),
               MaterialButton(
                 onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => SummaryScreen()),
-                  );
                   // Adicione aqui a função para finalizar a compra
+                  // Normalmente, você abriria uma tela de resumo ou checkout aqui.
                 },
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(8.0),
@@ -129,12 +101,10 @@ class _ShoppingCartScreenState extends State<ShoppingCartScreen> {
           ),
         ),
       ),
-
-
     );
   }
 
-  Widget _buildItemWidget() {
+  Widget _buildItemWidget(CartItem cartItem) {
     return Container(
       padding: EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -147,49 +117,45 @@ class _ShoppingCartScreenState extends State<ShoppingCartScreen> {
             width: 110,
             height: 80,
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(
-                  8),
-              image: const DecorationImage(
-                image: NetworkImage("https://t3.gstatic.com/licensed-image?q=tbn:ANd9GcQcHbxCjB7FY6Rttw1VZFdh0gIZmm4MLLjfmD0dhA11saxBKG_D49VVkmlvz3sE71-b"),
-                fit: BoxFit.cover,),
+              borderRadius: BorderRadius.circular(8),
+              image: DecorationImage(
+                image: NetworkImage(cartItem.productImageURL),
+                fit: BoxFit.cover,
+              ),
             ),
           ),
-
           SizedBox(width: 16),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
-                const Text(
-                  'Pizza de Calabresa',
+                Text(
+                  cartItem.productName,
                   style: TextStyle(
                     fontSize: 14,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
                 SizedBox(height: 8),
-                Text('Valor: R\$ $itemPrice'),
-                SizedBox(height: 8),
+                Text('Valor: R\$ ${cartItem.price.toStringAsFixed(2)}'),
                 SizedBox(height: 8),
                 Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween, // Fixa os ícones à direita
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     IconButton(
                       onPressed: () {
                         setState(() {
-                          if (itemCount > 1) itemCount--;
-                          updateTotalValue();
+                          if (cartItem.quantity > 1) cartItem.quantity--;
                         });
                       },
                       icon: Icon(Icons.remove),
                       color: Colors.red,
                     ),
-                    Text(itemCount.toString()),
+                    Text(cartItem.quantity.toString()),
                     IconButton(
                       onPressed: () {
                         setState(() {
-                          itemCount++;
-                          updateTotalValue();
+                          cartItem.quantity++;
                         });
                       },
                       icon: Icon(Icons.add),
@@ -198,7 +164,7 @@ class _ShoppingCartScreenState extends State<ShoppingCartScreen> {
                   ],
                 ),
                 SizedBox(height: 8),
-                Text('Total: R\$ ${itemCount * itemPrice}'),
+                Text('Total: R\$ ${(cartItem.quantity * cartItem.price).toStringAsFixed(2)}'),
               ],
             ),
           ),
@@ -206,62 +172,18 @@ class _ShoppingCartScreenState extends State<ShoppingCartScreen> {
       ),
     );
   }
+}
 
+class CartItem {
+  final String productName;
+  final double price;
+  late final int quantity;
+  final String productImageURL;
 
-
-
-  void updateTotalValue() {
-    setState(() {
-      totalValue = itemCount * itemPrice;
-    });
-  }
-
-  Widget _buildGenericItemsCarousel() {
-    List<Map<String, dynamic>> suggestedItens  = [
-      {'title': 'Guaraná Antártica', 'price': 5.0, 'description': 'Refrigerante'},
-      {'title': 'Pizza de Chocolate', 'price': 20.0, 'description': 'Saborosa pizza de chocolate'},
-      {'title': 'Batata Frita', 'price': 8.0, 'description': 'Porção de batata frita'},
-    ];
-
-    return Container(
-      height: 150,
-      child: CarouselSlider(
-        options: CarouselOptions(
-          height: 100.0,
-          enlargeCenterPage: true,
-          autoPlay: false,
-        ),
-        items: suggestedItens.map((item) {
-          return Builder(
-            builder: (BuildContext context) {
-              return Container(
-                width: MediaQuery.of(context).size.width,
-                margin: EdgeInsets.symmetric(horizontal: 5.0),
-                color: Colors.red,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      item['title'],
-                      style: TextStyle(color: Colors.white, fontSize: 18),
-                    ),
-                    SizedBox(height: 8),
-                    Text(
-                      item['description'],
-                      style: TextStyle(color: Colors.white, fontSize: 14),
-                    ),
-                    SizedBox(height: 8),
-                    Text(
-                      'R\$ ${item['price'].toStringAsFixed(2)}',
-                      style: TextStyle(color: Colors.white, fontSize: 16),
-                    ),
-                  ],
-                ),
-              );
-            },
-          );
-        }).toList(),
-      ),
-    );
-  }
+  CartItem({
+    required this.productName,
+    required this.price,
+    required this.quantity,
+    required this.productImageURL,
+  });
 }
